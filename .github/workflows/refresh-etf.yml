@@ -1,0 +1,107 @@
+name: Refresh ETF data
+
+# Pulls US spot-Bitcoin ETF candles from TradingView every 30 minutes and
+# publishes data/etfs.json for the static dashboard.
+#
+# The commit is a SINGLE squashed commit force-pushed to main, so the
+# repository history never accumulates and the repo size stays flat forever.
+
+on:
+  schedule:
+    # every 30 minutes, offset from the macro-signal job so they don't overlap
+    - cron: '12,42 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Commit even if nothing changed'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-etf
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Fetch ETF data from TradingView
+        run: node fetch_etf.js
+
+      - name: Commit as a single squashed commit
+        run: |
+          set -euo pipefail
+          git config user.name  'etf-bot'
+          git config user.email 'etf-bot@users.noreply.github.com'
+
+          git add data/etfs.json fetch_etf.js package.json package-lock.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            if [ "${{ inputs.force }}" != "true" ]; then
+              echo "NO_CHANGE"
+              exit 0
+            fi
+            printf '\n' >> data/etfs.json
+            git add data/etfs.json
+          fi
+
+          tmp="__gh_$(date -u +%s)"
+          git checkout --orphan "$tmp"
+          git add -A
+          git commit -m "chore: refresh ETF data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push --force origin "$tmp":main
+          git checkout -B main origin/main
+          git branch -D "$tmp" || true
+
+      - name: Report
+        if: always()
+        run: |
+          {
+            echo "### Bitcoin ETF refresh"
+            echo ""
+            if [ -f data/etfs.json ]; then
+              python3 - <<'PY'
+          import json
+          d = json.load(open('data/etfs.json'))
+
+          btc = d.get('btc') or {}
+          print(f"BTC: ${btc.get('price')} ({btc.get('chg_1d')}% 1d)")
+          print("")
+
+          agg = d.get('aggregate') or {}
+          print(f"**Verdict: {agg.get('verdict')}** (score {agg.get('score')}, "
+                f"avg premium {agg.get('avg_premium')}%)")
+          print("")
+          print("| Ticker | Price | 1d | 20d | vs BTC 20d | Premium | Volume |")
+          print("|---|---|---|---|---|---|---|")
+          for t, r in sorted((d.get('etfs') or {}).items(),
+                             key=lambda kv: kv[1].get('dvol') or 0, reverse=True):
+              dv = r.get('dvol') or 0
+              print(f"| {t} | ${r.get('price')} | {r.get('chg_1d')}% | "
+                    f"{r.get('chg_20d')}% | {r.get('vs_btc_20d')}% | "
+                    f"{r.get('ratio_prem')}% | ${dv/1e6:.1f}M |")
+          if d.get('errors'):
+              print("")
+              print("errors:", d['errors'])
+          PY
+            else
+              echo "data/etfs.json missing"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

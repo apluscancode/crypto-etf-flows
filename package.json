@@ -1,0 +1,12 @@
+{
+  "name": "bitcoin-etf-flows",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bitcoin ETF flow tracker — static dashboard, data refreshed by GitHub Actions",
+  "scripts": {
+    "fetch": "node fetch_etf.js"
+  },
+  "dependencies": {
+    "@mathieuc/tradingview": "^3.5.2"
+  }
+}

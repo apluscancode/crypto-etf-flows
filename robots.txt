@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://apluscancode.github.io/bitcoin-etf-flows/sitemap.xml

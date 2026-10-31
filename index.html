@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>جریان ETF های بیت‌کوین | ردیاب ورود و خروج پول — Bitcoin ETF Flows</title>
+<meta name="description" content="ردیاب زنده جریان ورود و خروج پول در ETF های اسپات بیت‌کوین آمریکا. پرمیوم IBIT، FBTC، GBTC، ARKB، BITB و ۱۰ صندوق دیگر — بدون ثبت‌نام، بدون سرور، هر ۳۰ دقیقه به‌روز.">
+<meta name="keywords" content="Bitcoin ETF, ETF flows, IBIT, FBTC, GBTC, ARKB, BITB, بیت کوین, جریان ETF, پرمیوم">
+<link rel="canonical" href="https://apluscancode.github.io/bitcoin-etf-flows/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bitcoin ETF Flows — جریان پول ETF های بیت‌کوین">
+<meta property="og:description" content="آیا پول وارد ETF های بیت‌کوین می‌شود یا خارج؟ پرمیوم، حجم دلاری و عملکرد نسبی نسبت به BTC — هر ۳۰ دقیقه به‌روز.">
+<meta property="og:url" content="https://apluscancode.github.io/bitcoin-etf-flows/">
+<meta property="og:image" content="https://apluscancode.github.io/bitcoin-etf-flows/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index,follow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%82%BF%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Bitcoin ETF Flows",
+  "alternateName": "ردیاب جریان ETF بیت‌کوین",
+  "url": "https://apluscancode.github.io/bitcoin-etf-flows/",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Any",
+  "inLanguage": ["fa", "en"],
+  "description": "ردیاب جریان ورود و خروج پول در ETF های اسپات بیت‌کوین آمریکا، بر پایه پرمیوم و حجم دلاری.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+</head>
+<body>
+<header class="wrap">
+  <div class="brand">
+    <span class="logo">₿</span>
+    <div>
+      <h1>جریان ETF های بیت‌کوین</h1>
+      <p class="sub">Bitcoin ETF Flows · پول وارد می‌شود یا خارج؟</p>
+    </div>
+  </div>
+  <div class="stamp">
+    <span id="stamp-time">—</span>
+    <span class="dot" id="live-dot" title="داده زنده"></span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- verdict -->
+  <section class="verdict-card" id="verdict">
+    <div class="verdict-head">
+      <span class="verdict-label">حکم کلی</span>
+      <span class="verdict-badge" id="verdict-badge">…</span>
+    </div>
+    <div class="verdict-main">
+      <div class="verdict-score">
+        <span id="verdict-text">در حال بارگذاری…</span>
+        <small id="verdict-sub"></small>
+      </div>
+      <div class="btc-block">
+        <span class="btc-label">بیت‌کوین</span>
+        <strong id="btc-price">—</strong>
+        <span id="btc-chg" class="chg">—</span>
+      </div>
+    </div>
+    <div class="meters">
+      <div class="meter">
+        <div class="meter-top"><span>میانگین پرمیوم</span><b id="m-prem">—</b></div>
+        <div class="bar"><i id="b-prem"></i></div>
+        <small>ETF/BTC امروز در مقابل میانگین ۲۰ روز</small>
+      </div>
+      <div class="meter">
+        <div class="meter-top"><span>حجم دلاری امروز</span><b id="m-vol">—</b></div>
+        <div class="bar"><i id="b-vol"></i></div>
+        <small>نسبت به میانگین ۲۰ روزه</small>
+      </div>
+      <div class="meter">
+        <div class="meter-top"><span>صندوق‌های با پرمیوم مثبت</span><b id="m-pos">—</b></div>
+        <div class="bar"><i id="b-pos"></i></div>
+        <small>از ۸ صندوق اسپات</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- table -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>صندوق‌ها</h2>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-sort="dvol" type="button">حجم</button>
+        <button class="tab" data-sort="chg_20d" type="button">۲۰ روزه</button>
+        <button class="tab" data-sort="ratio_prem" type="button">پرمیوم</button>
+        <button class="tab" data-sort="vs_btc_20d" type="button">نسبت به BTC</button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="etf-table">
+        <thead>
+          <tr>
+            <th class="c-name">صندوق</th>
+            <th>قیمت</th>
+            <th>۱ روز</th>
+            <th>۲۰ روز</th>
+            <th>نسبت به BTC</th>
+            <th>پرمیوم</th>
+            <th>حجم (دلار)</th>
+            <th class="c-spark">۶۰ روز</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="8" class="empty">در حال بارگذاری…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      <b>پرمیوم</b> = نسبت قیمت صندوق به بیت‌کوین، در مقایسه با میانگین همان نسبت در ۲۰ روز گذشته.
+      مثبت یعنی صندوق گران‌تر از معمول معامله می‌شود (فشار تقاضا / ورود پول)، منفی یعنی ارزان‌تر (خروج پول).
+    </p>
+  </section>
+
+  <!-- volume chart -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>حجم دلاری ۲۰ روز اخیر</h2>
+      <span class="hint" id="vol-hint"></span>
+    </div>
+    <canvas id="vol-chart" height="150"></canvas>
+  </section>
+
+  <section class="panel legend-panel">
+    <h2>چطور بخوانیم</h2>
+    <ul class="legend">
+      <li><span class="pill inflow">INFLOW</span> پرمیوم بالای ۰.۲٪ و حجم بالاتر از میانگین — پول وارد صندوق‌ها می‌شود.</li>
+      <li><span class="pill neutral">NEUTRAL</span> نه فشار خرید مشخص، نه فشار فروش. صبر کن.</li>
+      <li><span class="pill outflow">OUTFLOW</span> پرمیوم زیر ۰.۲٪− و حجم کم — پول در حال خروج.</li>
+      <li class="muted">BITO (فیوچرز) و BITX (۲ برابر اهرمی) از میانگین پرمیوم حذف می‌شوند چون ساختارشان با صندوق اسپات فرق دارد.</li>
+      <li class="muted">داده‌ها از TradingView، هر ۳۰ دقیقه با GitHub Actions. بدون سرور، بدون ثبت‌نام، بدون کوکی.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>ساخته‌شده با GitHub Pages · داده از TradingView · <span id="foot-gen">—</span></p>
+  <p class="disclaimer">این ابزار آموزشی است، توصیه سرمایه‌گذاری نیست.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+/* Bitcoin ETF Flows — dark trading dashboard, RTL, Persian-first.
+   No build step, no framework, no external fonts beyond one woff2 pair. */
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('fonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('fonts/Vazirmatn-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --bg: #0a0d12;
+  --bg2: #11161e;
+  --card: #151b25;
+  --card2: #1b2330;
+  --line: #232c3a;
+  --tx: #e8edf5;
+  --tx2: #9aa8bd;
+  --tx3: #64748b;
+  --green: #22c55e;
+  --green-d: #15803d;
+  --red: #ef4444;
+  --red-d: #b91c1c;
+  --amber: #f59e0b;
+  --blue: #3b82f6;
+  --purple: #a855f7;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-image:
+    radial-gradient(900px 500px at 85% -10%, rgba(59,130,246,.10), transparent 60%),
+    radial-gradient(700px 400px at 10% 5%, rgba(168,85,247,.07), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 18px; }
+
+/* ---------------------------------------------------------------- header --- */
+header.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 26px;
+  padding-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.brand { display: flex; align-items: center; gap: 13px; }
+
+.logo {
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  border-radius: 13px;
+  background: linear-gradient(140deg, #f7931a, #b45309);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(247,147,26,.28);
+  flex: 0 0 auto;
+}
+
+h1 { font-size: 21px; margin: 0; letter-spacing: -.2px; }
+.sub { margin: 2px 0 0; font-size: 12.5px; color: var(--tx3); }
+
+.stamp {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--tx2);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+}
+
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 0 rgba(34,197,94,.7);
+  animation: pulse 2.4s infinite;
+}
+.dot.stale { background: var(--amber); animation: none; }
+.dot.dead { background: var(--red); animation: none; }
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34,197,94,.6); }
+  70% { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+/* --------------------------------------------------------- verdict card --- */
+.verdict-card {
+  background: linear-gradient(160deg, var(--card) 0%, var(--card2) 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px 20px;
+  margin-bottom: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.verdict-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+  pointer-events: none;
+}
+
+.verdict-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.verdict-label { font-size: 12.5px; color: var(--tx3); letter-spacing: .3px; }
+
+.verdict-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: var(--card2);
+  border: 1px solid var(--line);
+  color: var(--tx2);
+}
+.verdict-badge.inflow  { background: rgba(34,197,94,.14); border-color: rgba(34,197,94,.4); color: #4ade80; }
+.verdict-badge.outflow { background: rgba(239,68,68,.14);  border-color: rgba(239,68,68,.4);  color: #f87171; }
+.verdict-badge.neutral { background: rgba(245,158,11,.13); border-color: rgba(245,158,11,.35); color: #fbbf24; }
+
+.verdict-main {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 22px; flex-wrap: wrap; margin-bottom: 18px;
+}
+
+.verdict-score { flex: 1 1 320px; min-width: 0; }
+#verdict-text { display: block; font-size: 25px; font-weight: 700; letter-spacing: -.4px; }
+#verdict-sub { display: block; font-size: 13px; color: var(--tx2); margin-top: 5px; line-height: 1.5; }
+
+.btc-block {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 1px; flex: 0 0 auto;
+  padding-inline-start: 22px;
+  border-inline-start: 1px solid var(--line);
+}
+.btc-label { font-size: 11.5px; color: var(--tx3); }
+#btc-price { font-size: 22px; font-variant-numeric: tabular-nums; }
+.chg { font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.chg.up { color: var(--green); }
+.chg.down { color: var(--red); }
+.chg.flat { color: var(--tx3); }
+
+.meters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.meter-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  font-size: 12.5px; color: var(--tx2); margin-bottom: 7px;
+}
+.meter-top b { font-size: 15px; color: var(--tx); font-variant-numeric: tabular-nums; }
+
+.bar {
+  height: 6px;
+  background: rgba(255,255,255,.06);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.bar > i {
+  display: block; height: 100%; width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  transition: width .7s cubic-bezier(.2,.8,.2,1);
+}
+.bar > i.pos { background: linear-gradient(90deg, var(--green-d), var(--green)); }
+.bar > i.neg { background: linear-gradient(90deg, var(--red-d), var(--red)); }
+.meter small { font-size: 11px; color: var(--tx3); line-height: 1.45; display: block; }
+
+/* ----------------------------------------------------------------- panel --- */
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.panel-head h2, .legend-panel h2 { font-size: 15px; margin: 0; letter-spacing: -.1px; }
+.hint { font-size: 12px; color: var(--tx3); }
+
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--tx2);
+  cursor: pointer;
+  transition: all .18s;
+}
+.tab:hover { border-color: #34415a; color: var(--tx); }
+.tab.active {
+  background: rgba(59,130,246,.16);
+  border-color: rgba(59,130,246,.5);
+  color: #93c5fd;
+}
+
+/* ----------------------------------------------------------------- table --- */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll::-webkit-scrollbar { height: 8px; }
+.table-scroll::-webkit-scrollbar-thumb { background: #2a3444; border-radius: 99px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 830px; }
+
+thead th {
+  text-align: right;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--tx3);
+  padding: 0 10px 9px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+thead th.c-spark { text-align: left; }
+
+tbody td {
+  padding: 11px 10px;
+  border-bottom: 1px solid rgba(35,44,58,.55);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,.022); }
+
+.name-cell { display: flex; align-items: center; gap: 9px; }
+.tick {
+  font-weight: 700;
+  font-size: 12.5px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--card2);
+  border: 1px solid var(--line);
+  letter-spacing: .3px;
+}
+.name-fa { font-size: 12.5px; color: var(--tx2); }
+.name-en { font-size: 10.5px; color: var(--tx3); display: block; }
+
+.num { font-weight: 700; }
+.pos { color: var(--green); }
+.neg { color: var(--red); }
+.mut { color: var(--tx3); font-weight: 400; }
+
+.spark { display: block; }
+.empty { text-align: center; color: var(--tx3); padding: 30px 10px !important; }
+
+.note {
+  font-size: 11.5px;
+  color: var(--tx3);
+  margin: 14px 0 0;
+  line-height: 1.65;
+  padding-top: 12px;
+  border-top: 1px solid rgba(35,44,58,.6);
+}
+.note b { color: var(--tx2); }
+
+/* ----------------------------------------------------------------- chart --- */
+canvas { width: 100%; display: block; }
+
+/* ---------------------------------------------------------------- legend --- */
+.legend { list-style: none; padding: 0; margin: 14px 0 0; }
+.legend li {
+  font-size: 12.5px;
+  color: var(--tx2);
+  padding: 7px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  line-height: 1.6;
+}
+.legend li.muted { color: var(--tx3); font-size: 12px; }
+.legend li.muted::before { content: '•'; color: var(--tx3); }
+
+.pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  letter-spacing: .4px;
+}
+.pill.inflow  { background: rgba(34,197,94,.15); color: #4ade80; }
+.pill.neutral { background: rgba(245,158,11,.15); color: #fbbf24; }
+.pill.outflow { background: rgba(239,68,68,.15);  color: #f87171; }
+
+/* ---------------------------------------------------------------- footer --- */
+footer.wrap {
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--tx3);
+}
+footer p { margin: 4px 0; }
+.disclaimer { color: #4a5567; }
+
+/* ------------------------------------------------------------- responsive --- */
+@media (max-width: 780px) {
+  .meters { grid-template-columns: 1fr; gap: 13px; }
+  .verdict-main { gap: 14px; }
+  .btc-block {
+    align-items: flex-start;
+    padding-inline-start: 0;
+    border-inline-start: none;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    width: 100%;
+  }
+  #verdict-text { font-size: 21px; }
+  h1 { font-size: 18px; }
+  .logo { width: 40px; height: 40px; font-size: 22px; }
+  .panel { padding: 15px 14px; }
+  .verdict-card { padding: 18px 16px; }
+}
+
+@media (max-width: 480px) {
+  .wrap { padding: 0 13px; }
+  .stamp { font-size: 11.5px; padding: 6px 11px; }
+  .tabs { width: 100%; }
+  .tab { flex: 1 1 auto; text-align: center; }
+}
